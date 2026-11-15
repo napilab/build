@@ -1,8 +1,20 @@
-//Enable RK3308's UART1
-
 /dts-v1/;
 /plugin/;
 
+/ {
+	compatible = "rockchip,rk3308";
+};
+
+&i2c0 {
+	status = "disabled";
+};
+
+&spi2 {
+	status = "disabled";
+};
+
 &uart1 {
 	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart1_xfer>;
 };
