@@ -17,12 +17,12 @@ KERNEL_TEST_TARGET="current"
 BOOT_SCENARIO="binman"
 IMAGE_PARTITION_TABLE="gpt"
 INCLUDE_HOME_DIR="yes"
-BOOT_LOGO="yes"
+PLYMOUTH="no"
 
 DEFAULT_CONSOLE="serial"
 
 ROOTPWD="napilinux"
-NAPI_EXTRAARGS="cma=256M systemd.show_status=1 plymouth.nolog"
+NAPI_EXTRAARGS="cma=256M systemd.show_status=1"
 CONSOLE_AUTOLOGIN="no"
 
 PACKAGE_LIST_BOARD="avahi-daemon vim can-utils i2c-tools mbpoll memtester minicom python3-pymodbus python3-smbus2 util-linux-extra"
