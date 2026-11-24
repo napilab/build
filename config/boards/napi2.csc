@@ -17,7 +17,8 @@ KERNEL_TEST_TARGET="current"
 BOOT_SCENARIO="binman"
 IMAGE_PARTITION_TABLE="gpt"
 INCLUDE_HOME_DIR="yes"
-PLYMOUTH="no"
+PLYMOUTH="yes"
+BOOT_LOGO="desktop"
 
 DEFAULT_CONSOLE="serial"
 
@@ -41,6 +42,12 @@ function post_family_tweaks__napi2_desktop() {
 			;;
 		gnome)
 			desktop_dm=gdm3
+			# Keep UART login available without HDMI.
+			install -d -m 0755 "${SDCARD}/etc/systemd/system/plymouth-quit-wait.service.d"
+			cat > "${SDCARD}/etc/systemd/system/plymouth-quit-wait.service.d/50-napi-timeout.conf" <<- EOF
+				[Service]
+				TimeoutSec=5s
+			EOF
 			;;
 		*) return 0 ;;
 	esac
