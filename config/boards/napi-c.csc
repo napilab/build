@@ -1,5 +1,5 @@
 # Rockchip RK3308 quad core 256-512MB SoC 100MbE WiFi/BT USB2 mPCIe-modem-slot
-# NAPI-C / NAPI-P / NAPI-Slot
+# NAPI-C with eMMC
 
 BOARD_NAME="NAPI-C"
 BOARD_VENDOR="napilab"

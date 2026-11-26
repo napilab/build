@@ -7,17 +7,17 @@ Adds the NAPI-C board: control device tree, u-boot dtsi fixups and
 defconfig.
 
 ---
- arch/arm/dts/rk3308-napi-c-u-boot.dtsi            |  12 ++++++++++++
- configs/napi-c-rk3308_defconfig                   |  74 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts | 316 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 402 insertions(+)
+ arch/arm/dts/rk3308-napi-c-u-boot.dtsi            |   12 +
+ configs/napi-c-rk3308_defconfig                   |   74 +++++
+ dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts |  320 +++++++++++++++++++++
+ 3 files changed, 406 insertions(+)
  create mode 100644 arch/arm/dts/rk3308-napi-c-u-boot.dtsi
  create mode 100644 configs/napi-c-rk3308_defconfig
  create mode 100644 dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts
 
 diff --git a/arch/arm/dts/rk3308-napi-c-u-boot.dtsi b/arch/arm/dts/rk3308-napi-c-u-boot.dtsi
 new file mode 100644
-index 0000000000..17e8e1bf2a
+index 0000000..17e8e1b
 --- /dev/null
 +++ b/arch/arm/dts/rk3308-napi-c-u-boot.dtsi
 @@ -0,0 +1,12 @@
@@ -35,7 +35,7 @@ index 0000000000..17e8e1bf2a
 +};
 diff --git a/configs/napi-c-rk3308_defconfig b/configs/napi-c-rk3308_defconfig
 new file mode 100644
-index 0000000000..3e62c7c1a6
+index 0000000..f2830c3
 --- /dev/null
 +++ b/configs/napi-c-rk3308_defconfig
 @@ -0,0 +1,74 @@
@@ -115,10 +115,10 @@ index 0000000000..3e62c7c1a6
 +CONFIG_ERRNO_STR=y
 diff --git a/dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts b/dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts
 new file mode 100644
-index 0000000000..d2b6aa8ea1
+index 0000000..758a9d4
 --- /dev/null
 +++ b/dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts
-@@ -0,0 +1,316 @@
+@@ -0,0 +1,320 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright (c) 2019 Akash Gajjar <akash@openedev.com>
@@ -247,12 +247,13 @@ index 0000000000..d2b6aa8ea1
 +
 +&emmc {
 +	cap-mmc-highspeed;
-+	cap-sd-highspeed;
++	no-sd;
 +	no-sdio;
 +	non-removable;
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&emmc_bus8 &emmc_clk &emmc_cmd>;
 +	vmmc-supply = <&vcc_io>;
++	vqmmc-supply = <&vcc_1v8>;
 +	status = "okay";
 +};
 +
@@ -349,7 +350,8 @@ index 0000000000..d2b6aa8ea1
 +	vccio0-supply = <&vcc_io>;
 +	vccio1-supply = <&vcc_io>;
 +	vccio2-supply = <&vcc_io>;
-+	vccio4-supply = <&vcc_1v8>;
++	vccio3-supply = <&vcc_1v8>;
++	vccio4-supply = <&vcc_io>;
 +	vccio5-supply = <&vcc_io>;
 +	status = "okay";
 +};
@@ -392,6 +394,8 @@ index 0000000000..d2b6aa8ea1
 +};
 +
 +&sdmmc {
++	max-frequency = <50000000>;
++	no-1-8-v;
 +	cap-mmc-highspeed;
 +	cap-sd-highspeed;
 +	disable-wp;
@@ -435,5 +439,3 @@ index 0000000000..d2b6aa8ea1
 +&wdt {
 +	status = "okay";
 +};
---
-Created with Armbian build tools https://github.com/armbian/build

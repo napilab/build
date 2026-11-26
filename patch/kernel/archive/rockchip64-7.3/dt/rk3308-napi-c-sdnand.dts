@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+
+#include "rk3308-napi-c.dts"
+
+/ {
+	model = "NAPI-C (SD NAND)";
+};
+
+&io_domains {
+	vccio3-supply = <&vcc_io>;
+	vccio4-supply = <&vcc_1v8>;
+};
+
+&emmc {
+	/delete-property/ cap-mmc-highspeed;
+	/delete-property/ mmc-hs200-1_8v;
+	/delete-property/ no-sd;
+	bus-width = <4>;
+	cap-sd-highspeed;
+	max-frequency = <50000000>;
+	no-1-8-v;
+	no-mmc;
+	pinctrl-0 = <&emmc_bus4 &emmc_clk &emmc_cmd>;
+	vqmmc-supply = <&vcc_io>;
+};
