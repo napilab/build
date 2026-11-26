@@ -6,7 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       napi_c:
-        description: "NAPI-C (RK3308)"
+        description: "NAPI-C eMMC"
+        type: boolean
+        default: false
+      napi_c_sdnand:
+        description: "NAPI-C SD NAND"
         type: boolean
         default: false
       napi2:
@@ -74,6 +78,7 @@ jobs:
         id: matrix
         env:
           SEL_NAPI_C: ${{ inputs.napi_c }}
+          SEL_NAPI_C_SDNAND: ${{ inputs.napi_c_sdnand }}
           SEL_NAPI2: ${{ inputs.napi2 }}
           SEL_NAPI2_MATE: ${{ inputs.napi2_mate }}
           SEL_NAPI2_GNOME: ${{ inputs.napi2_gnome }}
@@ -86,12 +91,13 @@ jobs:
           # Map checkbox inputs to board configurations.
           declare -A selected=(
             [napi-c]="${SEL_NAPI_C}"
+            [napi-c-sdnand]="${SEL_NAPI_C_SDNAND}"
             [napi2]="${SEL_NAPI2}"
             [napi-m]="${SEL_NAPI_M}"
           )
           boards=()
           builds=()
-          for board in napi-c napi2 napi-m; do
+          for board in napi-c napi-c-sdnand napi2 napi-m; do
             if [[ "${GITHUB_EVENT_NAME}" == "push" && "${board}" == "napi-m" ]]; then
               continue
             fi
@@ -102,7 +108,7 @@ jobs:
               if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
                 builds+=("{\"board\":\"${board}\",\"branch\":\"${branch}\",\"release\":\"trixie\",\"variant\":\"minimal\"}")
                 builds+=("{\"board\":\"${board}\",\"branch\":\"${branch}\",\"release\":\"noble\",\"variant\":\"standard\"}")
-                if [[ "${board}" == "napi-c" ]]; then
+                if [[ "${board}" == napi-c || "${board}" == napi-c-sdnand ]]; then
                   builds+=("{\"board\":\"${board}\",\"branch\":\"${branch}\",\"release\":\"trixie\",\"variant\":\"standard\"}")
                   builds+=("{\"board\":\"${board}\",\"branch\":\"${branch}\",\"release\":\"noble\",\"variant\":\"minimal\"}")
                 fi

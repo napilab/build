@@ -1,0 +1,67 @@
+Subject: [PATCH] Configure NAPI-C sdnand storage and I/O domains
+
+diff --git a/arch/arm/dts/rk3308-napi-c-u-boot.dtsi b/arch/arm/dts/rk3308-napi-c-u-boot.dtsi
+index 17e8e1b..761cd5b 100644
+--- a/arch/arm/dts/rk3308-napi-c-u-boot.dtsi
++++ b/arch/arm/dts/rk3308-napi-c-u-boot.dtsi
+@@ -7,6 +7,10 @@
+ &uart0_xfer {
+ 	bootph-all;
+ };
++&emmc_bus4 {
++	bootph-pre-ram;
++	bootph-some-ram;
++};
+ &vdd_core {
+ 	regulator-init-microvolt = <1015000>;
+ };
+diff --git a/configs/napi-c-rk3308_defconfig b/configs/napi-c-rk3308_defconfig
+index f2830c3..1f99c06 100644
+--- a/configs/napi-c-rk3308_defconfig
++++ b/configs/napi-c-rk3308_defconfig
+@@ -15,7 +15,7 @@ CONFIG_ANDROID_BOOT_IMAGE=y
+ CONFIG_FIT=y
+ CONFIG_FIT_VERBOSE=y
+ CONFIG_BOOTDELAY=5
+-CONFIG_DEFAULT_FDT_FILE="rockchip/rk3308-napi-c.dtb"
++CONFIG_DEFAULT_FDT_FILE="rockchip/rk3308-napi-c-sdnand.dtb"
+ # CONFIG_DISPLAY_CPUINFO is not set
+ CONFIG_SPL_MAX_SIZE=0x40000
+ CONFIG_SPL_PAD_TO=0x7f8000
+diff --git a/dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts b/dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts
+index 758a9d4..fae3a95 100644
+--- a/dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts
++++ b/dts/upstream/src/arm64/rockchip/rk3308-napi-c.dts
+@@ -125,14 +125,17 @@
+ };
+ 
+ &emmc {
+-	cap-mmc-highspeed;
+-	no-sd;
++	bus-width = <4>;
++	max-frequency = <50000000>;
++	no-1-8-v;
++	no-mmc;
++	cap-sd-highspeed;
+ 	no-sdio;
+ 	non-removable;
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&emmc_bus8 &emmc_clk &emmc_cmd>;
++	pinctrl-0 = <&emmc_bus4 &emmc_clk &emmc_cmd>;
+ 	vmmc-supply = <&vcc_io>;
+-	vqmmc-supply = <&vcc_1v8>;
++	vqmmc-supply = <&vcc_io>;
+ 	status = "okay";
+ };
+ 
+@@ -229,8 +232,8 @@
+ 	vccio0-supply = <&vcc_io>;
+ 	vccio1-supply = <&vcc_io>;
+ 	vccio2-supply = <&vcc_io>;
+-	vccio3-supply = <&vcc_1v8>;
+-	vccio4-supply = <&vcc_io>;
++	vccio3-supply = <&vcc_io>;
++	vccio4-supply = <&vcc_1v8>;
+ 	vccio5-supply = <&vcc_io>;
+ 	status = "okay";
+ };

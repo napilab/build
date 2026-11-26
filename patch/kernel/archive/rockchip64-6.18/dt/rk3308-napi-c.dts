@@ -9,7 +9,7 @@
 #include "rk3308.dtsi"
 
 / {
-	model = "NAPI-C";
+	model = "NAPI-C (eMMC)";
 	compatible = "radxa,rockpis", "rockchip,rk3308";
 
 	aliases {
@@ -157,7 +157,7 @@
 	vccio1-supply = <&vcc_io>;
 	vccio2-supply = <&vcc_io>;
 	vccio3-supply = <&vcc_1v8>;
-	vccio4-supply = <&vcc_1v8>;
+	vccio4-supply = <&vcc_io>;
 	vccio5-supply = <&vcc_io>;
 };
 
@@ -201,13 +201,14 @@
 &emmc {
 	bus-width = <8>;
 	cap-mmc-highspeed;
-	cap-sd-highspeed;
 	mmc-hs200-1_8v;
+	no-sd;
 	no-sdio;
 	non-removable;
 	pinctrl-names = "default";
 	pinctrl-0 = <&emmc_bus8 &emmc_clk &emmc_cmd>;
 	vmmc-supply = <&vcc_io>;
+	vqmmc-supply = <&vcc_1v8>;
 	status = "okay";
 };
 
@@ -215,6 +216,8 @@
 	cap-mmc-highspeed;
 	cap-sd-highspeed;
 	disable-wp;
+	max-frequency = <50000000>;
+	no-1-8-v;
 	vmmc-supply = <&vcc_io>;
 	status = "okay";
 };
