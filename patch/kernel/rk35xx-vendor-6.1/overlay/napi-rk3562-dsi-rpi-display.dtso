@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * NAPI-M: Raspberry Pi compatible DSI display on J11 through the
+ * "Radxa MIPI DSI 0.3mm 39p to 1mm 15p" cable.
+ *
+ * For displays that behave like the Raspberry Pi 7" touchscreen v1
+ * (800x480, control MCU at I2C address 0x45), such as the Waveshare
+ * 4.3inch DSI LCD. The panel driver uses one DSI data lane.
+ *
+ * J11 pins 26/27 are I2C4. Touch is not described yet: the 15-pin cable
+ * has no interrupt line and the polling driver (raspits_ft5426) is not
+ * built in this kernel configuration.
+ */
+
+/dts-v1/;
+/plugin/;
+
+&display_subsystem {
+	status = "okay";
+};
+
+&vop {
+	status = "okay";
+};
+
+&vop_mmu {
+	status = "okay";
+};
+
+&video_phy {
+	status = "okay";
+};
+
+&dsi_in_vp0 {
+	status = "okay";
+};
+
+&dsi {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	rockchip,lane-rate = <696>;
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@1 {
+			reg = <1>;
+
+			dsi_out_panel: endpoint {
+				remote-endpoint = <&panel_in_dsi>;
+			};
+		};
+	};
+};
+
+&i2c4 {
+	status = "okay";
+	clock-frequency = <100000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c4m0_xfer>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	raspits_panel: panel@45 {
+		compatible = "raspberrypi,7inch-touchscreen-panel";
+		reg = <0x45>;
+
+		port {
+			panel_in_dsi: endpoint {
+				remote-endpoint = <&dsi_out_panel>;
+			};
+		};
+	};
+};
