@@ -1,0 +1,28 @@
+#!/bin/sh
+# NAPI-M: Raspberry Pi DSI display workaround.
+# The panel driver attaches to the DSI host after the DRM master has been
+# bound, so no DSI connector is created. Rebind the DRM master once the panel
+# is attached. Does nothing when the overlay is off or no display answers.
+
+DRV=/sys/bus/platform/drivers/rockchip-drm
+MASTER=display-subsystem
+
+grep -qs 'raspberrypi,7inch-touchscreen-panel' /sys/bus/i2c/devices/*/of_node/compatible || exit 0
+
+i=0
+while [ $i -lt 30 ]; do
+	ls /sys/class/drm/ 2>/dev/null | grep -q -- '-DSI-' && exit 0
+	for d in /sys/bus/mipi-dsi/devices/*; do
+		if [ "$(basename "$(readlink "$d/driver" 2>/dev/null)")" = rpi-ts-dsi ] && [ -e "$DRV/$MASTER" ]; then
+			echo "$MASTER" > "$DRV/unbind"
+			sleep 1
+			echo "$MASTER" > "$DRV/bind"
+			echo "napi-dsi-rebind: DRM master rebound for the DSI panel"
+			exit 0
+		fi
+	done
+	i=$((i + 1))
+	sleep 1
+done
+echo "napi-dsi-rebind: no DSI panel answered, nothing done"
+exit 0
